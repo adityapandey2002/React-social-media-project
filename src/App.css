@@ -1,0 +1,29 @@
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+
+.content {
+  width: 100%;
+}
+
+.sidebar {
+  height: 100vh;
+}
+
+.PostList {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.card {
+  margin: 5px;
+  padding: 10px;
+}
+
+.Footer {
+  padding: 10px, 10px;
+  margin: 20px;
+}
