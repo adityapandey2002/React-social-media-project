@@ -1,6 +1,6 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-const Sidebar = () => {
+const Sidebar = ({ selectedTab, setSelectedTab }) => {
   return (
     <div
       className="d-flex flex-column flex-shrink-0 bg-body-tertiary sidebar"
@@ -21,10 +21,17 @@ const Sidebar = () => {
         <span className="visually-hidden">Icon-only</span>
       </a>
       <ul className="nav nav-pills nav-flush flex-column mb-auto text-center">
-        <li className="nav-item">
+        <li
+          className="nav-item"
+          onClick={() => {
+            setSelectedTab("Home");
+          }}
+        >
           <a
             href="#"
-            className="nav-link active py-3 border-bottom rounded-0"
+            className={`nav-link  py-3 border-bottom rounded-0 ${
+              selectedTab === "Home" && "active"
+            }`}
             aria-current="page"
             data-bs-toggle="tooltip"
             data-bs-placement="right"
@@ -38,10 +45,12 @@ const Sidebar = () => {
             ></i>
           </a>
         </li>
-        <li>
+        <li className="nav-item" onClick={() => setSelectedTab("Create-Post")}>
           <a
             href="#"
-            className="nav-link py-3 border-bottom rounded-0"
+            className={`nav-link  py-3 border-bottom rounded-0 ${
+              selectedTab === "Create-Post" && "active"
+            }`}
             data-bs-toggle="tooltip"
             data-bs-placement="right"
             aria-label="Orders"
@@ -51,22 +60,6 @@ const Sidebar = () => {
               className="bi bi-plus-square-fill"
               style={{ fontSize: "24px" }}
               aria-label="Orders"
-            ></i>
-          </a>
-        </li>
-        <li>
-          <a
-            href="#"
-            className="nav-link py-3 border-bottom rounded-0"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Dashboard"
-            data-bs-original-title="Dashboard"
-          >
-            <i
-              className="bi bi-speedometer2"
-              style={{ fontSize: "24px" }}
-              aria-label="Dashboard"
             ></i>
           </a>
         </li>
