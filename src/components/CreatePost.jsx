@@ -5,12 +5,26 @@ const CreatePost = () => {
   const { addPost } = useContext(PostListContext);
 
   const userIdElement = useRef();
+  const postTitleElement = useRef();
+  const postBodyElement = useRef();
+  const reactionsElement = useRef();
+  const tagsElement = useRef();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const UserId = userIdElement.current.value;
+    const userId = userIdElement.current.value;
+    const postBody = postBodyElement.current.value;
+    const reactions = reactionsElement.current.value;
+    const tags = tagsElement.current.value.split(" ");
+    const postTitle = postTitleElement.current.value;
 
-    addPost(UserId);
+    userIdElement.current.value = "";
+    postBodyElement.current.value = "";
+    tagsElement.current.value = "";
+    postTitleElement.current.value = "";
+    reactionsElement.current.value = "";
+
+    addPost(userId, postBody, postTitle, reactions, tags);
   };
 
   return (
@@ -21,9 +35,9 @@ const CreatePost = () => {
         </label>
         <input
           type="email"
-          className="form-control"
           ref={userIdElement}
-          id="exampleInputEmail1"
+          className="form-control"
+          id="userIdElement"
           aria-describedby="emailHelp"
           placeholder="Enter your id "
         />
@@ -34,8 +48,9 @@ const CreatePost = () => {
         </label>
         <input
           type="text"
+          ref={postTitleElement}
           className="form-control"
-          id="exampleInputPassword1"
+          id="postTitleElement"
           placeholder="Enter your title here "
         />
       </div>
@@ -45,9 +60,10 @@ const CreatePost = () => {
         </label>
         <textarea
           type="text"
+          ref={postBodyElement}
           className="form-control"
           rows="4"
-          id="exampleInputPassword1"
+          id="postBodyElement"
           placeholder="Enter your content here "
         />
       </div>
@@ -57,8 +73,9 @@ const CreatePost = () => {
         </label>
         <input
           type="text"
+          ref={tagsElement}
           className="form-control"
-          id="exampleInputPassword1"
+          id="tagsElement"
           placeholder="Enter your tags here "
         />
       </div>
@@ -68,8 +85,9 @@ const CreatePost = () => {
         </label>
         <input
           type="text"
+          ref={reactionsElement}
           className="form-control"
-          id="exampleInputPassword1"
+          id="reactionsElement"
           placeholder="Enter your reactions here "
         />
       </div>
