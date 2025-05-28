@@ -39,9 +39,11 @@
 /* Post List Container */
 .post-list-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 20px;
-  padding: 10px;
+  padding: 20px;
+  max-width: 1800px;
+  margin: 0 auto;
 }
 
 /* Individual Post Card */
@@ -52,6 +54,7 @@
   transition: transform 0.2s ease;
   margin: 0;
   height: 100%;
+  max-width: 100%;
 }
 
 .card:hover {
@@ -127,6 +130,8 @@
 
   .post-list-container {
     grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 15px;
   }
 
   .create-post-container {
@@ -144,7 +149,7 @@
 
 @media (min-width: 1600px) {
   .post-list-container {
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 }
 
@@ -179,5 +184,175 @@
   .header,
   .Footer {
     border: 1px solid #000;
+  }
+}
+
+/* Welcome Message Styling */
+.welcome-container {
+  padding: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.welcome-content {
+  flex: 1;
+  padding: 2rem;
+}
+
+.welcome-content h1 {
+  color: #1a1a1a;
+  margin-bottom: 1.5rem;
+  font-size: 2.5rem;
+}
+
+.welcome-content .lead {
+  color: #4a5568;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.welcome-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.welcome-img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Welcome Message */
+@media (max-width: 768px) {
+  .welcome-container {
+    flex-direction: column;
+    padding: 1rem;
+    margin: 1rem;
+  }
+
+  .welcome-content {
+    padding: 1rem;
+    text-align: center;
+  }
+
+  .welcome-content h1 {
+    font-size: 2rem;
+  }
+
+  .welcome-image {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .d-md-flex {
+    justify-content: center !important;
+  }
+}
+
+/* Reactions Container and Tags */
+.reactions-container {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+  align-items: center;
+}
+
+.reaction-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 6px;
+  font-weight: 500;
+}
+
+/* Like Button */
+.like-tag {
+  background-color: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+.like-tag:hover {
+  background-color: #bbdefb;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(25, 118, 210, 0.1);
+}
+
+.like-tag:active {
+  transform: translateY(0);
+}
+
+/* Dislike Button */
+.dislike-tag {
+  background-color: #fce4ec;
+  color: #c2185b;
+  border: 1px solid #f8bbd0;
+}
+
+.dislike-tag:hover {
+  background-color: #f8bbd0;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(194, 24, 91, 0.1);
+}
+
+.dislike-tag:active {
+  transform: translateY(0);
+}
+
+/* View Count Tag */
+.view-tag {
+  background-color: #f5f5f5;
+  color: #616161;
+  border: 1px solid #e0e0e0;
+  cursor: default;
+}
+
+/* Reaction Icons */
+.reaction-icon {
+  font-size: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+/* Hover effect for icons */
+.like-tag:hover .reaction-icon,
+.dislike-tag:hover .reaction-icon {
+  transform: scale(1.1);
+}
+
+/* Active state for buttons */
+.like-tag:active .reaction-icon,
+.dislike-tag:active .reaction-icon {
+  transform: scale(0.95);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .reactions-container {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .reaction-tag {
+    padding: 5px 12px;
+    font-size: 0.85rem;
+  }
+
+  .reaction-icon {
+    font-size: 1.1rem;
   }
 }

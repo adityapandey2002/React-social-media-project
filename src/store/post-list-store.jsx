@@ -2,8 +2,9 @@ import { createContext, useReducer } from "react";
 
 export const PostListContext = createContext({
   postListData: [],
-  addPost: () => {},
-  deletePost: () => {},
+  addPost: () => { },
+  addInitialPosts: () => { },
+  deletePost: () => { },
 });
 
 const postListReducer = (currPostList, action) => {
@@ -14,6 +15,8 @@ const postListReducer = (currPostList, action) => {
     newPostList = currPostList.filter(
       (post) => post.id !== action.payload.id
     );
+  } else if (action.type === "ADD_INITIAL_POSTS") {
+    newPostList = action.payload.posts;
   }
 
   return newPostList;
@@ -33,8 +36,37 @@ const PostListProvider = ({ children }) => {
         userId: userId,
         title: postTitle,
         body: postBody,
-        reactions: reactions,
+        reactions: {
+          likes: 0,
+          dislikes: 0
+        },
         tags: tags,
+        views: 0
+      },
+    });
+  };
+
+  const addInitialPosts = (posts) => {
+    if (!Array.isArray(posts)) {
+      console.error('Posts must be an array:', posts);
+      return;
+    }
+
+    // Format posts to ensure they have the correct structure
+    const formattedPosts = posts.map(post => ({
+      id: post.id,
+      title: post.title || 'Untitled',
+      body: post.body || '',
+      reactions: post.reactions || { likes: 0, dislikes: 0 },
+      userId: post.userId || 'anonymous',
+      tags: Array.isArray(post.tags) ? post.tags : [],
+      views: post.views || 0
+    }));
+
+    dispatchPostList({
+      type: "ADD_INITIAL_POSTS",
+      payload: {
+        posts: formattedPosts
       },
     });
   };
@@ -49,7 +81,7 @@ const PostListProvider = ({ children }) => {
   };
 
   return (
-    <PostListContext.Provider value={{ postListData, addPost, deletePost }}>
+    <PostListContext.Provider value={{ postListData, addPost, deletePost, addInitialPosts }}>
       {children}
     </PostListContext.Provider>
   );
