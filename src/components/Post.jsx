@@ -23,7 +23,6 @@ const Post = ({ post }) => {
             {tag}
           </span>
         ))}
-        {post.tags}
         <div className="alert alert-success reactions" role="alert">
           This post has been reacted by {post.reactions} people.
         </div>

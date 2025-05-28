@@ -1,34 +1,183 @@
+/* Main Layout */
 .app-container {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
+  background-color: #f0f2f5;
 }
 
-.content {
-  width: 100%;
-}
-
+/* Sidebar */
 .sidebar {
+  width: 100px;
+  min-width: 100px;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
   height: 100vh;
+  overflow-y: auto;
+  transition: all 0.3s ease;
+  z-index: 1000;
 }
 
-.PostList {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: center;
+/* Main Content Area */
+.content {
+  flex: 1;
+  padding: 20px;
+  max-width: calc(100% - 100px);
+  margin-left: auto;
 }
 
-.card {
-  margin: 5px;
+/* Header */
+.header {
+  background-color: #ffffff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* Post List Container */
+.post-list-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
   padding: 10px;
 }
 
-.Footer {
-  padding: 10px, 10px;
-  margin: 20px;
+/* Individual Post Card */
+.card {
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  margin: 0;
+  height: 100%;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Create Post Form */
+.create-post-container {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .mb-3 {
-  padding: 5px;
-  margin: 10px;
+  margin-bottom: 1rem !important;
+}
+
+/* Form Controls */
+.form-control {
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  padding: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.form-control:focus {
+  border-color: #4299e1;
+  box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+  outline: none;
+}
+
+/* Footer */
+.Footer {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Hashtags */
+.hashtag {
+  display: inline-block;
+  background: #e2e8f0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.875rem;
+  color: #4a5568;
+  margin: 0.25rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    margin-bottom: 1rem;
+  }
+
+  .content {
+    max-width: 100%;
+    padding: 15px;
+  }
+
+  .post-list-container {
+    grid-template-columns: 1fr;
+  }
+
+  .create-post-container {
+    padding: 1rem;
+    margin: 0.5rem;
+  }
+}
+
+/* Zoom Responsiveness */
+@media (min-width: 1200px) {
+  .post-list-container {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+}
+
+@media (min-width: 1600px) {
+  .post-list-container {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  }
+}
+
+/* Smooth Transitions */
+.content > * {
+  transition: all 0.3s ease;
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .sidebar {
+    display: none;
+  }
+
+  .content {
+    margin: 0;
+    max-width: 100%;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .card,
+  .create-post-container,
+  .header,
+  .Footer {
+    border: 1px solid #000;
+  }
 }

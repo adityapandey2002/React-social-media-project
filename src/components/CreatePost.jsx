@@ -24,7 +24,7 @@ const CreatePost = () => {
     postTitleElement.current.value = "";
     reactionsElement.current.value = "";
 
-    addPost(userId, postBody, postTitle, reactions, tags);
+    addPost(userId, postTitle, postBody, reactions, tags);
   };
 
   return (
@@ -34,11 +34,10 @@ const CreatePost = () => {
           UserId
         </label>
         <input
-          type="email"
+          type="text"
           ref={userIdElement}
           className="form-control"
           id="userIdElement"
-          aria-describedby="emailHelp"
           placeholder="Enter your id "
         />
       </div>
