@@ -1,77 +1,22 @@
-import { useContext, useRef, useState } from "react";
+import { Form, redirect } from "react-router-dom";
 import { PostListContext } from "../store/post-list-store";
+import { useContext } from "react";
 
 const CreatePost = () => {
-  const { addPost } = useContext(PostListContext);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const userIdElement = useRef();
-  const postTitleElement = useRef();
-  const postBodyElement = useRef();
-  const reactionsElement = useRef();
-  const tagsElement = useRef();
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const userId = userIdElement.current.value;
-      const postBody = postBodyElement.current.value;
-      const tags = tagsElement.current.value.split(" ").filter(tag => tag.trim() !== "");
-      const postTitle = postTitleElement.current.value;
-
-      const newPost = {
-        userId: parseInt(userId),
-        title: postTitle,
-        body: postBody,
-        reactions: {
-          likes: 0,
-          dislikes: 0
-        },
-        tags: tags,
-        views: 0
-      };
-
-      const response = await fetch('https://dummyjson.com/posts/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newPost)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create post');
-      }
-
-      const createdPost = await response.json();
-      addPost(createdPost);
-
-      // Clear form
-      userIdElement.current.value = "";
-      postBodyElement.current.value = "";
-      tagsElement.current.value = "";
-      postTitleElement.current.value = "";
-      reactionsElement.current.value = "";
-    } catch (error) {
-      console.error('Error creating post:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
-    <form onSubmit={handleSubmit}>
+    <Form method="POST" action="/create-post">
       <div className="mb-3">
         <label htmlFor="UserId" className="form-label">
-          UserId
+          User ID
         </label>
         <input
           type="number"
-          ref={userIdElement}
+          name="userId"
           className="form-control"
           id="userIdElement"
-          placeholder="Enter your id"
+          placeholder="Enter your user ID"
           required
+          min="1"
         />
       </div>
       <div className="mb-3">
@@ -80,7 +25,7 @@ const CreatePost = () => {
         </label>
         <input
           type="text"
-          ref={postTitleElement}
+          name="title"
           className="form-control"
           id="postTitleElement"
           placeholder="Enter your title"
@@ -92,7 +37,7 @@ const CreatePost = () => {
           Content
         </label>
         <textarea
-          ref={postBodyElement}
+          name="body"
           className="form-control"
           rows="4"
           id="postBodyElement"
@@ -106,34 +51,57 @@ const CreatePost = () => {
         </label>
         <input
           type="text"
-          ref={tagsElement}
+          name="tags"
           className="form-control"
           id="tagsElement"
           placeholder="Enter tags (space-separated)"
         />
       </div>
-      <div className="mb-3">
-        <label htmlFor="Reactions" className="form-label">
-          Reactions
-        </label>
-        <input
-          type="number"
-          ref={reactionsElement}
-          className="form-control"
-          id="reactionsElement"
-          placeholder="Number of reactions"
-          min="0"
-        />
-      </div>
       <button
         type="submit"
         className="btn btn-primary"
-        disabled={isSubmitting}
       >
-        {isSubmitting ? 'Creating...' : 'Create Post'}
+        Create Post
       </button>
-    </form>
+    </Form>
   );
 };
+
+export async function createPostAction({ request }) {
+  const formData = await request.formData();
+  const postData = Object.fromEntries(formData);
+
+  const newPost = {
+    userId: parseInt(postData.userId),
+    title: postData.title,
+    body: postData.body,
+    reactions: {
+      likes: 0,
+      dislikes: 0
+    },
+    tags: postData.tags ? postData.tags.split(" ").filter(tag => tag.trim() !== "") : [],
+    views: 0
+  };
+
+  const response = await fetch('https://jsonplaceholder.typicode.com/posts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      title: postData.title,
+      body: postData.body,
+      userId: parseInt(postData.userId)
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to create post');
+  }
+
+  const createdPost = await response.json();
+  console.log(createdPost);
+
+  // We need to return redirect here
+  return redirect("/");
+}
 
 export default CreatePost;

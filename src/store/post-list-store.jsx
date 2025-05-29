@@ -4,7 +4,6 @@ export const PostListContext = createContext({
   postListData: [],
   addPost: () => { },
   deletePost: () => { },
-  fetching: false,
 });
 
 const postListReducer = (currPostList, action) => {
@@ -29,23 +28,23 @@ const PostListProvider = ({ children }) => {
     []
   );
 
-  const [fetching, setFetching] = useState(false);
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    setFetching(true);
+  // const [fetching, setFetching] = useState(false);
+  // useEffect(() => {
+  //   const controller = new AbortController();
+  //   const signal = controller.signal;
+  //   setFetching(true);
 
-    fetch('https://dummyjson.com/posts', { signal })
-      .then(res => res.json())
-      .then((data) => {
-        addInitialPosts(data.posts);
-        setFetching(false);
-      });
+  //   fetch('https://dummyjson.com/posts', { signal })
+  //     .then(res => res.json())
+  //     .then((data) => {
+  //       addInitialPosts(data.posts);
+  //       setFetching(false);
+  //     });
 
-    return () => {
-      controller.abort();
-    };
-  }, []);
+  //   return () => {
+  //     controller.abort();
+  //   };
+  // }, []);
 
 
 
@@ -85,7 +84,6 @@ const PostListProvider = ({ children }) => {
 
 
 
-
   const deletePost = (postId) => {
     dispatchPostList({
       type: "DELETE_POST",
@@ -96,10 +94,27 @@ const PostListProvider = ({ children }) => {
   };
 
   return (
-    <PostListContext.Provider value={{ postListData, addPost, deletePost, fetching }}>
+    <PostListContext.Provider value={{ postListData, addPost, deletePost, }}>
       {children}
     </PostListContext.Provider>
   );
 };
+
+export const postListLoader = async () => {
+  const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+  if (!response.ok) {
+    throw new Error('Failed to fetch posts');
+  }
+  const posts = await response.json();
+  return posts.map(post => ({
+    ...post,
+    reactions: { likes: 0, dislikes: 0 },
+    tags: [],
+    views: 0
+  }));
+};
+
+
+
 
 export default PostListProvider;

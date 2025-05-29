@@ -1,17 +1,16 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { Link } from "react-router-dom";
 
-const Sidebar = ({ selectedTab, setSelectedTab }) => {
+const Sidebar = () => {
   return (
     <div
       className="d-flex flex-column flex-shrink-0 bg-body-tertiary sidebar"
       style={{ width: "4.5rem" }}
     >
-      <a
-        href="/"
+      <Link
+        to="/"
         className="d-block p-3 link-body-emphasis text-decoration-none"
-        data-bs-toggle="tooltip"
-        data-bs-placement="right"
-        data-bs-original-title="Icon-only"
+        title="Home"
       >
         <i
           className="bi bi-bootstrap"
@@ -19,49 +18,31 @@ const Sidebar = ({ selectedTab, setSelectedTab }) => {
           aria-hidden="true"
         ></i>
         <span className="visually-hidden">Icon-only</span>
-      </a>
+      </Link>
       <ul className="nav nav-pills nav-flush flex-column mb-auto text-center">
-        <li
-          className="nav-item"
-          onClick={() => {
-            setSelectedTab("Home");
-          }}
-        >
-          <a
-            href="#"
-            className={`nav-link  py-3 border-bottom rounded-0 ${
-              selectedTab === "Home" && "active"
-            }`}
-            aria-current="page"
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Home"
-            data-bs-original-title="Home"
+        <li className="nav-item">
+          <Link
+            to="/"
+            className="nav-link py-3 border-bottom rounded-0"
+            title="Home"
           >
             <i
               className="bi bi-house"
               style={{ fontSize: "24px" }}
-              aria-label="Home"
             ></i>
-          </a>
+          </Link>
         </li>
-        <li className="nav-item" onClick={() => setSelectedTab("Create-Post")}>
-          <a
-            href="#"
-            className={`nav-link  py-3 border-bottom rounded-0 ${
-              selectedTab === "Create-Post" && "active"
-            }`}
-            data-bs-toggle="tooltip"
-            data-bs-placement="right"
-            aria-label="Orders"
-            data-bs-original-title="Orders"
+        <li className="nav-item">
+          <Link
+            to="/create-post"
+            className="nav-link py-3 border-bottom rounded-0"
+            title="Create Post"
           >
             <i
               className="bi bi-plus-square-fill"
               style={{ fontSize: "24px" }}
-              aria-label="Orders"
             ></i>
-          </a>
+          </Link>
         </li>
       </ul>
     </div>
