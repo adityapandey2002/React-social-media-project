@@ -1,25 +1,26 @@
-import { createContext, useReducer } from "react";
+import { createContext, useEffect, useReducer, useState } from "react";
 
 export const PostListContext = createContext({
   postListData: [],
   addPost: () => { },
-  addInitialPosts: () => { },
   deletePost: () => { },
+  fetching: false,
 });
 
 const postListReducer = (currPostList, action) => {
-  let newPostList = currPostList;
-  if (action.type === "ADD_POST") {
-    newPostList = [action.payload, ...currPostList];
-  } else if (action.type === "DELETE_POST") {
-    newPostList = currPostList.filter(
-      (post) => post.id !== action.payload.id
-    );
-  } else if (action.type === "ADD_INITIAL_POSTS") {
-    newPostList = action.payload.posts;
-  }
+  switch (action.type) {
+    case "ADD_POST":
+      return [action.payload, ...currPostList];
 
-  return newPostList;
+    case "DELETE_POST":
+      return currPostList.filter(post => post.id !== action.payload.id);
+
+    case "ADD_INITIAL_POSTS":
+      return action.payload.posts;
+
+    default:
+      return currPostList;
+  }
 };
 
 const PostListProvider = ({ children }) => {
@@ -28,21 +29,41 @@ const PostListProvider = ({ children }) => {
     []
   );
 
-  const addPost = (userId, postTitle, postBody, reactions, tags) => {
+  const [fetching, setFetching] = useState(false);
+  useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    setFetching(true);
+
+    fetch('https://dummyjson.com/posts', { signal })
+      .then(res => res.json())
+      .then((data) => {
+        addInitialPosts(data.posts);
+        setFetching(false);
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+
+
+  const formatPost = (post) => ({
+    id: post.id,
+    title: post.title || 'Untitled',
+    body: post.body || '',
+    reactions: post.reactions || { likes: 0, dislikes: 0 },
+    userId: post.userId || 'anonymous',
+    tags: Array.isArray(post.tags) ? post.tags.filter(tag => tag.trim() !== '') : [],
+    views: post.views || 0
+  });
+
+  const addPost = (post) => {
+    const formattedPost = formatPost(post);
     dispatchPostList({
       type: "ADD_POST",
-      payload: {
-        id: Date.now(),
-        userId: userId,
-        title: postTitle,
-        body: postBody,
-        reactions: {
-          likes: 0,
-          dislikes: 0
-        },
-        tags: tags,
-        views: 0
-      },
+      payload: formattedPost
     });
   };
 
@@ -52,16 +73,7 @@ const PostListProvider = ({ children }) => {
       return;
     }
 
-    // Format posts to ensure they have the correct structure
-    const formattedPosts = posts.map(post => ({
-      id: post.id,
-      title: post.title || 'Untitled',
-      body: post.body || '',
-      reactions: post.reactions || { likes: 0, dislikes: 0 },
-      userId: post.userId || 'anonymous',
-      tags: Array.isArray(post.tags) ? post.tags : [],
-      views: post.views || 0
-    }));
+    const formattedPosts = posts.map(formatPost);
 
     dispatchPostList({
       type: "ADD_INITIAL_POSTS",
@@ -70,6 +82,9 @@ const PostListProvider = ({ children }) => {
       },
     });
   };
+
+
+
 
   const deletePost = (postId) => {
     dispatchPostList({
@@ -81,29 +96,10 @@ const PostListProvider = ({ children }) => {
   };
 
   return (
-    <PostListContext.Provider value={{ postListData, addPost, deletePost, addInitialPosts }}>
+    <PostListContext.Provider value={{ postListData, addPost, deletePost, fetching }}>
       {children}
     </PostListContext.Provider>
   );
 };
-
-const DEFAULT_POST_LIST = [
-  {
-    id: "1",
-    title: "Going to Mumbai",
-    body: "Hi Friends, I am going to Mumbai for my vacations. Hope to enjoy a lot. Peace out.",
-    reactions: 2,
-    userId: "user-9",
-    tags: ["vacation", "Mumbai", "Enjoying"],
-  },
-  {
-    id: "2",
-    title: "Paas ho bhai",
-    body: "4 saal ki masti k baad bhi ho gaye hain paas. Hard to believe.",
-    reactions: 15,
-    userId: "user-12",
-    tags: ["Graduating", "Unbelievable"],
-  },
-];
 
 export default PostListProvider;

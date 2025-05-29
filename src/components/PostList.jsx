@@ -9,34 +9,28 @@ const PostList = () => {
   const [fetching, setFetching] = useState(false);
 
 
-  useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    setFetching(true);
 
-    fetch('https://dummyjson.com/posts', { signal })
-      .then(res => res.json())
-      .then((data) => {
-        addInitialPosts(data.posts);
-        setFetching(false);
-      });
-
-    return () => {
-      controller.abort();
+  const normalizePost = (post) => {
+    return {
+      ...post,
+      reactions: post.reactions || { likes: 0, dislikes: 0 },
+      tags: Array.isArray(post.tags) ? post.tags.filter(tag => tag.trim() !== "") : [],
+      views: post.views || 0
     };
-  }, []);
-
+  };
 
   return (
     <>
       {fetching && <LoadingSpinner />}
-      {postListData.length === 0 && <WelcomeMessage /*onGetPostsClick={handleOnGetPostsClicked}*/ />}
+      {postListData.length === 0 && <WelcomeMessage />}
       <div className="post-list-container">
-        {postListData.map((post) => (
-          <Post key={post.id} post={post} />
-        ))}
+        {Array.isArray(postListData) && postListData.map((post) => {
+          const normalizedPost = normalizePost(post);
+          return post && post.id ? (
+            <Post key={`post-${post.id}-${Date.now()}`} post={normalizedPost} />
+          ) : null;
+        })}
       </div>
-
     </>
   );
 };

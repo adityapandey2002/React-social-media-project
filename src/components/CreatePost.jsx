@@ -1,8 +1,9 @@
-import { useContext, useRef } from "react";
+import { useContext, useRef, useState } from "react";
 import { PostListContext } from "../store/post-list-store";
 
 const CreatePost = () => {
   const { addPost } = useContext(PostListContext);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const userIdElement = useRef();
   const postTitleElement = useRef();
@@ -10,21 +11,52 @@ const CreatePost = () => {
   const reactionsElement = useRef();
   const tagsElement = useRef();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    const userId = userIdElement.current.value;
-    const postBody = postBodyElement.current.value;
-    const reactions = reactionsElement.current.value;
-    const tags = tagsElement.current.value.split(" ");
-    const postTitle = postTitleElement.current.value;
+    setIsSubmitting(true);
 
-    userIdElement.current.value = "";
-    postBodyElement.current.value = "";
-    tagsElement.current.value = "";
-    postTitleElement.current.value = "";
-    reactionsElement.current.value = "";
+    try {
+      const userId = userIdElement.current.value;
+      const postBody = postBodyElement.current.value;
+      const tags = tagsElement.current.value.split(" ").filter(tag => tag.trim() !== "");
+      const postTitle = postTitleElement.current.value;
 
-    addPost(userId, postTitle, postBody, reactions, tags);
+      const newPost = {
+        userId: parseInt(userId),
+        title: postTitle,
+        body: postBody,
+        reactions: {
+          likes: 0,
+          dislikes: 0
+        },
+        tags: tags,
+        views: 0
+      };
+
+      const response = await fetch('https://dummyjson.com/posts/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newPost)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create post');
+      }
+
+      const createdPost = await response.json();
+      addPost(createdPost);
+
+      // Clear form
+      userIdElement.current.value = "";
+      postBodyElement.current.value = "";
+      tagsElement.current.value = "";
+      postTitleElement.current.value = "";
+      reactionsElement.current.value = "";
+    } catch (error) {
+      console.error('Error creating post:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -34,11 +66,12 @@ const CreatePost = () => {
           UserId
         </label>
         <input
-          type="text"
+          type="number"
           ref={userIdElement}
           className="form-control"
           id="userIdElement"
-          placeholder="Enter your id "
+          placeholder="Enter your id"
+          required
         />
       </div>
       <div className="mb-3">
@@ -50,7 +83,8 @@ const CreatePost = () => {
           ref={postTitleElement}
           className="form-control"
           id="postTitleElement"
-          placeholder="Enter your title here "
+          placeholder="Enter your title"
+          required
         />
       </div>
       <div className="mb-3">
@@ -58,12 +92,12 @@ const CreatePost = () => {
           Content
         </label>
         <textarea
-          type="text"
           ref={postBodyElement}
           className="form-control"
           rows="4"
           id="postBodyElement"
-          placeholder="Enter your content here "
+          placeholder="Enter your content"
+          required
         />
       </div>
       <div className="mb-3">
@@ -75,7 +109,7 @@ const CreatePost = () => {
           ref={tagsElement}
           className="form-control"
           id="tagsElement"
-          placeholder="Enter your tags here "
+          placeholder="Enter tags (space-separated)"
         />
       </div>
       <div className="mb-3">
@@ -83,15 +117,20 @@ const CreatePost = () => {
           Reactions
         </label>
         <input
-          type="text"
+          type="number"
           ref={reactionsElement}
           className="form-control"
           id="reactionsElement"
-          placeholder="Enter your reactions here "
+          placeholder="Number of reactions"
+          min="0"
         />
       </div>
-      <button type="submit" className="btn btn-primary">
-        Submit
+      <button
+        type="submit"
+        className="btn btn-primary"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? 'Creating...' : 'Create Post'}
       </button>
     </form>
   );
