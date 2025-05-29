@@ -1,7 +1,7 @@
 
 
 
-const WelcomeMessage = ({ onGetPostsClick }) => {
+const WelcomeMessage = (/*{ onGetPostsClick }*/) => {
   return (
     <div className="welcome-container rounded-3 border shadow-lg">
       <div className="welcome-content">
@@ -17,7 +17,7 @@ const WelcomeMessage = ({ onGetPostsClick }) => {
           <button type="button" className="btn btn-outline-secondary btn-lg px-4">
             Learn More
           </button>
-          <button type="button" onClick={onGetPostsClick} className="btn btn-outline-secondary btn-lg px-4">
+          <button type="button" /*onClick={onGetPostsClick} */ className="btn btn-outline-secondary btn-lg px-4">
             Get Posts from server
           </button>
         </div>
